@@ -1,5 +1,7 @@
 package com.swissre.service;
 
+import com.swissre.component.CsvParser;
+import com.swissre.component.FileReader;
 import com.swissre.model.Employee;
 import org.junit.Test;
 
@@ -12,7 +14,7 @@ public class FileReaderServiceTest {
     @Test
     public void testReadEmployeesFromCsv() {
         // Instantiate the service
-        FileReaderService fileReaderService = new FileReaderService();
+        FileReaderService fileReaderService = new FileReaderService(new FileReader(), new CsvParser());
 
         // Use a test-specific CSV file path
         String testFilePath = "employees.csv";

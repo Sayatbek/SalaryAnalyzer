@@ -57,6 +57,24 @@ public class Employee {
     }
 
     /**
+     * Gets the employee's firstName.
+     *
+     * @return An String representing the firstName for the employee.
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Gets the employee's lastName.
+     *
+     * @return An String representing the lastName for the employee.
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
      * Gets the employee's salary.
      *
      * @return A double value representing the employee's salary.

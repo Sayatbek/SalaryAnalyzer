@@ -7,10 +7,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Provides services for analyzing the salaries and reporting lines of employees within an organization.
- * This service aims to identify discrepancies in manager salaries and report on excessively long reporting lines.
+ * This class provides services for analyzing the salaries and reporting lines of employees within an organization.
+ * It aims to identify discrepancies in manager salaries and report on excessively long reporting lines.
  */
 public class SalaryAnalysisService {
+
+    private static final double MINIMUM_SALARY_MULTIPLIER = 1.20;
+    private static final double MAXIMUM_SALARY_MULTIPLIER = 1.50;
+    private static final int MAX_REPORTING_LINE_DEPTH = 4;
 
     /**
      * List of all employees within the organization.
@@ -33,26 +37,23 @@ public class SalaryAnalysisService {
      * A manager's salary is considered below expectation if it's less than 20% more than the average salary of
      * their direct subordinates, and above expectation if it's more than 50% more than that average.
      */
-    public void analyzeManagerSalaries() {
+    public void analyzeSalariesOfManagers() {
         Map<Integer, List<Employee>> managersToSubordinates = employees.stream()
                 .filter(e -> e.getManagerId() != null)
                 .collect(Collectors.groupingBy(Employee::getManagerId));
 
         managersToSubordinates.forEach((managerId, subordinates) -> {
-            Employee manager = employees.stream()
-                    .filter(e -> e.getId() == managerId)
-                    .findFirst()
-                    .orElse(null);
+            Employee manager = findEmployeeById(managerId);
 
-            if (manager == null) return;
+            if (manager == null) {
+                System.out.println("Manager with ID " + managerId + " not found.");
+                return;
+            }
 
-            double averageSubordinateSalary = subordinates.stream()
-                    .mapToDouble(Employee::getSalary)
-                    .average()
-                    .orElse(0.0);
+            double averageSubordinateSalary = calculateAverageSalary(subordinates);
 
-            double minimumExpectedSalary = averageSubordinateSalary * 1.20;
-            double maximumExpectedSalary = averageSubordinateSalary * 1.50;
+            double minimumExpectedSalary = averageSubordinateSalary * MINIMUM_SALARY_MULTIPLIER;
+            double maximumExpectedSalary = averageSubordinateSalary * MAXIMUM_SALARY_MULTIPLIER;
 
             if (manager.getSalary() < minimumExpectedSalary) {
                 System.out.println(manager + " earns less than they should by $" + (minimumExpectedSalary - manager.getSalary()));
@@ -68,26 +69,44 @@ public class SalaryAnalysisService {
      * <p>
      * A reporting line is considered too long if there are more than four managers between the employee and the CEO.
      */
-    public void analyzeReportingLines() {
+    public void analyzeDepthOfReportingLines() {
         employees.forEach(employee -> {
-            int depth = 0;
-            Integer managerId = employee.getManagerId();
-            while (managerId != null) {
-                Integer finalManagerId = managerId;
-                Employee manager = employees.stream()
-                        .filter(e -> e.getId() == finalManagerId)
-                        .findFirst()
-                        .orElse(null);
+            int depth = calculateReportingLineDepth(employee);
 
-                if (manager == null) break;
-
-                managerId = manager.getManagerId();
-                depth++;
-            }
-
-            if (depth > 4) {
-                System.out.println(employee + " has a reporting line that is too long by " + (depth - 4));
+            if (depth > MAX_REPORTING_LINE_DEPTH) {
+                System.out.println(employee + " has a reporting line that is too long by " + (depth - MAX_REPORTING_LINE_DEPTH));
             }
         });
+    }
+
+    private Employee findEmployeeById(int id) {
+        return employees.stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private double calculateAverageSalary(List<Employee> employees) {
+        return employees.stream()
+                .mapToDouble(Employee::getSalary)
+                .average()
+                .orElse(0.0);
+    }
+
+    private int calculateReportingLineDepth(Employee employee) {
+        int depth = 0;
+        Integer managerId = employee.getManagerId();
+        while (managerId != null) {
+            Employee manager = findEmployeeById(managerId);
+
+            if (manager == null) {
+                System.out.println("Manager with ID " + managerId + " not found.");
+                break;
+            }
+
+            managerId = manager.getManagerId();
+            depth++;
+        }
+        return depth;
     }
 }
