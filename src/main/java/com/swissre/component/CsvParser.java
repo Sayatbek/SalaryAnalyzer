@@ -25,7 +25,7 @@ public class CsvParser {
         String line;
         try {
             // Skip the header row
-            var lineWithHeaders = reader.readLine();
+            reader.readLine();
 
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
@@ -37,9 +37,7 @@ public class CsvParser {
             System.err.println("Failed to read CSV data: " + ioException.getMessage());
         } finally {
             try {
-                if (reader != null) {
-                    reader.close();
-                }
+                reader.close();
             } catch (IOException ioException) {
                 System.err.println("Failed to close reader: " + ioException.getMessage());
             }

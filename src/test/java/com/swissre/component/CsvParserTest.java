@@ -11,10 +11,9 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CsvParserTest {
+class CsvParserTest {
 
     private CsvParser csvParser;
     private BufferedReader reader;
@@ -48,7 +47,7 @@ public class CsvParserTest {
         assertEquals("John", employee1.getFirstName());
         assertEquals("Doe", employee1.getLastName());
         assertEquals(50000, employee1.getSalary());
-        assertEquals(null, employee1.getManagerId());
+        assertNull(employee1.getManagerId());
 
         Employee employee2 = employees.get(1);
         assertEquals(2, employee2.getId());

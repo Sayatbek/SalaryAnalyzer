@@ -3,13 +3,12 @@ package com.swissre.service;
 import com.swissre.component.CsvParser;
 import com.swissre.component.FileReader;
 import com.swissre.model.Employee;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-
-public class FileReaderServiceTest {
+class FileReaderServiceTest {
 
     @Test
     void testReadEmployeesFromCsv() {
@@ -23,6 +22,6 @@ public class FileReaderServiceTest {
         List<Employee> employees = fileReaderService.readEmployeesFromCsv(testFilePath);
 
         // Assert conditions based on your test csv
-        assertFalse("List of employees should not be empty", employees.isEmpty());
+        Assertions.assertFalse(employees.isEmpty(), "List of employees should not be empty");
     }
 }
