@@ -3,7 +3,7 @@ package com.swissre.service;
 import com.swissre.component.CsvParser;
 import com.swissre.component.FileReader;
 import com.swissre.model.Employee;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertFalse;
 public class FileReaderServiceTest {
 
     @Test
-    public void testReadEmployeesFromCsv() {
+    void testReadEmployeesFromCsv() {
         // Instantiate the service
         FileReaderService fileReaderService = new FileReaderService(new FileReader(), new CsvParser());
 

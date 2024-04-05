@@ -22,18 +22,18 @@ public class CsvParserTest {
     private final PrintStream standardOut = System.out;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         csvParser = new CsvParser();
         System.setErr(new PrintStream(outputStreamCaptor)); // Capture System.out
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         System.setErr(standardOut); // Reset System.out to its original
     }
 
     @Test
-    public void testParseCsv() {
+    void testParseCsv() {
         String csvData = "id,firstName,lastName,salary,managerId\n" // header
                 + "1,John,Doe,50000,\n" // first row
                 + "2,Jane,Doe,60000,1"; // second row
@@ -59,7 +59,7 @@ public class CsvParserTest {
     }
 
     @Test
-    public void testParseCsv_EmptyData() {
+    void testParseCsv_EmptyData() {
         reader = new BufferedReader(new StringReader(""));
 
         List<Employee> employees = csvParser.parseCsv(reader);
@@ -67,14 +67,14 @@ public class CsvParserTest {
     }
 
     @Test
-    public void testParseCsv_HeaderOnly() {
+    void testParseCsv_HeaderOnly() {
         reader = new BufferedReader(new StringReader("id,firstName,lastName,salary,managerId"));
         List<Employee> employees = csvParser.parseCsv(reader);
         assertTrue(employees.isEmpty());
     }
 
     @Test
-    public void testParseCsv_MissingFields() {
+    void testParseCsv_MissingFields() {
         reader = new BufferedReader(new StringReader("id,firstName,lastName,salary,managerId\n" +
                 "1,John,Doe,"));
 
@@ -86,7 +86,7 @@ public class CsvParserTest {
     }
 
     @Test
-    public void testParseCsv_NonNumericFields() {
+    void testParseCsv_NonNumericFields() {
         reader = new BufferedReader(new StringReader("id,firstName,lastName,salary,managerId\n" +
                 "1,John,Doe,abc,def"));
 

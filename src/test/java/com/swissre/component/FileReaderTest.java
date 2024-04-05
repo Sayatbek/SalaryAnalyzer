@@ -14,19 +14,19 @@ public class FileReaderTest {
     private FileReader fileReader;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         fileReader = new FileReader();
     }
 
     @Test
-    public void testReadFile_Success() throws IOException {
+    void testReadFile_Success() throws IOException {
         BufferedReader reader = fileReader.readFile("employees.csv");
         String firstLine = reader.readLine();
         assertEquals("Id,firstName,lastName,salary,managerId", firstLine);
     }
 
     @Test
-    public void testReadFile_FileNotFound() {
+    void testReadFile_FileNotFound() {
         assertThrows(IllegalArgumentException.class, () -> fileReader.readFile("nonexistentFile.csv"));
     }
 }

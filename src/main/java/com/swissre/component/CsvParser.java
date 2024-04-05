@@ -25,21 +25,11 @@ public class CsvParser {
         String line;
         try {
             // Skip the header row
-            reader.readLine();
+            var lineWithHeaders = reader.readLine();
 
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                try {
-                    Employee employee = new Employee(
-                            Integer.parseInt(values[0].trim()),
-                            values[1].trim(),
-                            values[2].trim(),
-                            Double.parseDouble(values[3].trim()),
-                            values.length < 5 ? null : Integer.parseInt(values[4].trim()));
-                    employees.add(employee);
-                } catch (NumberFormatException numberFormatException) {
-                    System.err.println("Failed to parse number from line " + line + ": " + numberFormatException.getMessage());
-                }
+                populateEmployeesList(values, employees, line);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("Invalid CSV data: " + e.getMessage());
@@ -55,5 +45,19 @@ public class CsvParser {
             }
         }
         return employees;
+    }
+
+    private static void populateEmployeesList(String[] values, List<Employee> employees, String line) {
+        try {
+            Employee employee = new Employee(
+                    Integer.parseInt(values[0].trim()),
+                    values[1].trim(),
+                    values[2].trim(),
+                    Double.parseDouble(values[3].trim()),
+                    values.length < 5 ? null : Integer.parseInt(values[4].trim()));
+            employees.add(employee);
+        } catch (NumberFormatException numberFormatException) {
+            System.err.println("Failed to parse number from line " + line + ": " + numberFormatException.getMessage());
+        }
     }
 }

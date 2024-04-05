@@ -23,14 +23,14 @@ class SalaryAnalysisServiceTest {
 
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         System.setOut(new PrintStream(outputStreamCaptor)); // Capture System.out
 
         // Initialized before each test with the specific scenario
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         System.setOut(standardOut); // Reset System.out to its original
     }
 
