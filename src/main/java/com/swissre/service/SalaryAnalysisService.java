@@ -6,15 +6,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Provides services for analyzing the salaries and reporting lines of employees within an organization.
+ * This service aims to identify discrepancies in manager salaries and report on excessively long reporting lines.
+ */
 public class SalaryAnalysisService {
 
+    /**
+     * List of all employees within the organization.
+     */
     private final List<Employee> employees;
 
+    /**
+     * Constructs a new SalaryAnalysisService with a provided list of employees.
+     *
+     * @param employees The complete list of employees to be analyzed.
+     */
     public SalaryAnalysisService(List<Employee> employees) {
         this.employees = employees;
     }
 
-    // Identifies managers who earn less or more than they should
+    /**
+     * Analyzes each manager's salary to determine if they earn less or more than the expected range based on
+     * their direct subordinates' average salaries. It prints out managers who do not meet the salary criteria.
+     * <p>
+     * A manager's salary is considered below expectation if it's less than 20% more than the average salary of
+     * their direct subordinates, and above expectation if it's more than 50% more than that average.
+     */
     public void analyzeManagerSalaries() {
         Map<Integer, List<Employee>> managersToSubordinates = employees.stream()
                 .filter(e -> e.getManagerId() != null)
@@ -44,7 +62,12 @@ public class SalaryAnalysisService {
         });
     }
 
-    // Identifies employees with reporting lines longer than 4
+    /**
+     * Identifies employees with reporting lines longer than four managers and prints out these employees along
+     * with the extent to which their reporting line exceeds this threshold.
+     * <p>
+     * A reporting line is considered too long if there are more than four managers between the employee and the CEO.
+     */
     public void analyzeReportingLines() {
         employees.forEach(employee -> {
             int depth = 0;

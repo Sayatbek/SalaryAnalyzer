@@ -8,7 +8,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides functionality to read employee data from a CSV file and create a list of Employee objects.
+ */
 public class FileReaderService {
+
+    /**
+     * Reads employee data from a CSV file located in the resources' folder.
+     * The CSV file format should match the Employee object structure.
+     * <p>
+     * The method skips the header row of the CSV and then reads each line,
+     * converts it into an Employee object, and adds it to the list of employees.
+     *
+     * @param fileName The name of the CSV file to read from the resources' folder.
+     * @return A list of Employee objects parsed from the CSV file.
+     * @throws IllegalArgumentException if the CSV file is not found in the resources' folder.
+     */
     public List<Employee> readEmployeesFromCsv(String fileName) {
         List<Employee> employees = new ArrayList<>();
         InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);

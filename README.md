@@ -19,5 +19,21 @@ This application analyzes the organizational structure of BIG COMPANY to identif
 1. **Clone the Repository**
 
    ```bash
-   git clone https://example.com/your-repository.git
-   cd your-repository
+   git clone git@github.com:Sayatbek/SalaryAnalyzer.git
+   cd SalaryAnalyzer
+2. **Build the Application**
+
+   ```bash
+   mvn clean package
+3. **Run the Tests**
+
+   ```bash
+   mvn test
+4. **Generate the Documentation**
+
+   ```bash
+    mvn javadoc:javadoc
+5. **View the Documentation**
+
+   ```bash
+   open in browser 'target/site/apidocs/index.html'
