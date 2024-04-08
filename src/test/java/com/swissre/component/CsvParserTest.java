@@ -23,19 +23,19 @@ class CsvParserTest {
     @BeforeEach
     void setUp() {
         csvParser = new CsvParser();
-        System.setErr(new PrintStream(outputStreamCaptor)); // Capture System.out
+        System.setErr(new PrintStream(outputStreamCaptor));
     }
 
     @AfterEach
     void tearDown() {
-        System.setErr(standardOut); // Reset System.out to its original
+        System.setErr(standardOut);
     }
 
     @Test
     void testParseCsv() {
-        String csvData = "id,firstName,lastName,salary,managerId\n" // header
-                + "1,John,Doe,50000,\n" // first row
-                + "2,Jane,Doe,60000,1"; // second row
+        String csvData = "id,firstName,lastName,salary,managerId\n"
+                + "1,John,Doe,50000,\n"
+                + "2,Jane,Doe,60000,1";
         reader = new BufferedReader(new StringReader(csvData));
 
         List<Employee> employees = csvParser.parseCsv(reader);

@@ -1,5 +1,7 @@
 package com.swissre.model;
 
+import java.util.Objects;
+
 /**
  * Represents an employee in the organization.
  * This class stores basic employee information including their ID, name, salary, and manager.
@@ -100,5 +102,22 @@ public class Employee {
     @Override
     public String toString() {
         return String.format("%d, %s, %s, %.2f, %s", id, firstName, lastName, salary, managerId == null ? "" : managerId.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, salary, managerId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Employee employee = (Employee) obj;
+        return id == employee.id &&
+                Double.compare(employee.salary, salary) == 0 &&
+                Objects.equals(firstName, employee.firstName) &&
+                Objects.equals(lastName, employee.lastName) &&
+                Objects.equals(managerId, employee.managerId);
     }
 }
