@@ -1,9 +1,11 @@
 package com.swissre.component;
 
 import com.swissre.model.Employee;
+import com.swissre.model.Subordinate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,51 +13,61 @@ import java.util.List;
  * This class is responsible for parsing CSV data into Employee objects.
  */
 public class CsvParser {
+    private static final int ID_POSITION = 0;
+    private static final int FIRST_NAME_POSITION = 1;
+    private static final int LAST_NAME_POSITION = 2;
+    private static final int SALARY_POSITION = 3;
+    private static final int MANAGER_ID_POSITION = 4;
 
     /**
-     * Parses a CSV from a BufferedReader and returns a list of Employee objects.
-     * It catches specific exceptions like IOException and NumberFormatException.
-     * It also ensures that the BufferedReader is closed in a finally block.
+     * Parses a CSV from a Reader and returns a list of Employee objects.
+     * It catches specific exceptions like IOException.
+     * It uses Apache Commons CSV for parsing CSV data.
      *
-     * @param reader the BufferedReader to parse.
+     * @param reader the Reader to parse.
      * @return a list of Employee objects parsed from the CSV.
      */
-    public List<Employee> parseCsv(BufferedReader reader) {
+    public List<Employee> parse(Reader reader) {
         List<Employee> employees = new ArrayList<>();
-        String line;
-        try {
+        try (BufferedReader bufferedReader = new BufferedReader(reader)) {
             // Skip the header row
-            reader.readLine();
+            bufferedReader.readLine();
 
-            while ((line = reader.readLine()) != null) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
                 String[] values = line.split(",");
-                populateEmployeesList(values, employees, line);
+                populateEmployeesList(values, employees);
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Invalid CSV data: " + e.getMessage());
         } catch (IOException ioException) {
-            System.err.println("Failed to read CSV data: " + ioException.getMessage());
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException ioException) {
-                System.err.println("Failed to close reader: " + ioException.getMessage());
-            }
+            System.err.printf("Failed to read CSV data: %s%n", ioException);
         }
         return employees;
     }
 
-    private static void populateEmployeesList(String[] values, List<Employee> employees, String line) {
+    private void populateEmployeesList(String[] values, List<Employee> employees) {
         try {
-            Employee employee = new Employee(
-                    Integer.parseInt(values[0].trim()),
-                    values[1].trim(),
-                    values[2].trim(),
-                    Double.parseDouble(values[3].trim()),
-                    values.length < 5 ? null : Integer.parseInt(values[4].trim()));
+            Employee employee = mapValuesToEmployee(values);
             employees.add(employee);
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            System.err.printf("Invalid CSV data: %s%n", arrayIndexOutOfBoundsException);
         } catch (NumberFormatException numberFormatException) {
-            System.err.println("Failed to parse number from line " + line + ": " + numberFormatException.getMessage());
+            System.err.printf("Failed to parse number from line: %s%n", numberFormatException);
         }
+    }
+
+    private Employee mapValuesToEmployee(String[] values) {
+        int id = Integer.parseInt(values[ID_POSITION].trim());
+        String firstName = values[FIRST_NAME_POSITION].trim();
+        String lastName = values[LAST_NAME_POSITION].trim();
+        double salary = Double.parseDouble(values[SALARY_POSITION].trim());
+
+        Employee employee;
+        if (values.length > MANAGER_ID_POSITION) {
+            int managerId = Integer.parseInt(values[MANAGER_ID_POSITION].trim());
+            employee = new Subordinate(id, firstName, lastName, salary, managerId);
+        } else {
+            employee = new Employee(id, firstName, lastName, salary);
+        }
+        return employee;
     }
 }

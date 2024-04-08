@@ -1,6 +1,7 @@
 package com.swissre.service;
 
 import com.swissre.model.Employee;
+import com.swissre.model.Subordinate;
 
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,9 @@ public class SalaryAnalysisService {
     private static final int MAX_REPORTING_LINE_DEPTH = 4;
 
     /**
-     * List of all employees within the organization.
+     * Map of all employees by id within the organization.
      */
-    private final List<Employee> employees;
+    private final Map<Integer, Employee> employeesMap;
 
     /**
      * Constructs a new SalaryAnalysisService with a provided list of employees.
@@ -27,7 +28,8 @@ public class SalaryAnalysisService {
      * @param employees The complete list of employees to be analyzed.
      */
     public SalaryAnalysisService(List<Employee> employees) {
-        this.employees = employees;
+        this.employeesMap = employees.stream()
+                .collect(Collectors.toMap(Employee::getId, employee -> employee));
     }
 
     /**
@@ -38,9 +40,10 @@ public class SalaryAnalysisService {
      * their direct subordinates, and above expectation if it's more than 50% more than that average.
      */
     public void analyzeSalariesOfManagers() {
-        Map<Integer, List<Employee>> managersToSubordinates = employees.stream()
-                .filter(e -> e.getManagerId() != null)
-                .collect(Collectors.groupingBy(Employee::getManagerId));
+        Map<Integer, List<Subordinate>> managersToSubordinates = employeesMap.values().stream()
+                .filter(employee -> employee instanceof Subordinate)
+                .map(employee -> (Subordinate) employee)
+                .collect(Collectors.groupingBy(Subordinate::getManagerId));
 
         managersToSubordinates.forEach((managerId, subordinates) -> {
             Employee manager = findEmployeeById(managerId);
@@ -70,30 +73,30 @@ public class SalaryAnalysisService {
      * A reporting line is considered too long if there are more than four managers between the employee and the CEO.
      */
     public void analyzeDepthOfReportingLines() {
-        employees.forEach(employee -> {
-            int depth = calculateReportingLineDepth(employee);
+        employeesMap.values().stream()
+                .filter(e -> e instanceof Subordinate)
+                .map(e -> (Subordinate) e)
+                .forEach(subordinate -> {
+                    int depth = calculateReportingLineDepth(subordinate);
 
-            if (depth > MAX_REPORTING_LINE_DEPTH) {
-                System.out.println(employee + " has a reporting line that is too long by " + (depth - MAX_REPORTING_LINE_DEPTH));
-            }
-        });
+                    if (depth > MAX_REPORTING_LINE_DEPTH) {
+                        System.out.println(subordinate + " has a reporting line that is too long by " + (depth - MAX_REPORTING_LINE_DEPTH));
+                    }
+                });
     }
 
     private Employee findEmployeeById(int id) {
-        return employees.stream()
-                .filter(e -> e.getId() == id)
-                .findFirst()
-                .orElse(null);
+        return employeesMap.get(id);
     }
 
-    private double calculateAverageSalary(List<Employee> employees) {
+    private double calculateAverageSalary(List<Subordinate> employees) {
         return employees.stream()
                 .mapToDouble(Employee::getSalary)
                 .average()
                 .orElse(0.0);
     }
 
-    private int calculateReportingLineDepth(Employee employee) {
+    private int calculateReportingLineDepth(Subordinate employee) {
         int depth = 0;
         Integer managerId = employee.getManagerId();
         while (managerId != null) {
@@ -103,9 +106,11 @@ public class SalaryAnalysisService {
                 System.out.println("Manager with ID " + managerId + " not found.");
                 break;
             }
-
-            managerId = manager.getManagerId();
             depth++;
+            if (!(manager instanceof Subordinate)) {
+                break;
+            }
+            managerId = ((Subordinate) manager).getManagerId();
         }
         return depth;
     }

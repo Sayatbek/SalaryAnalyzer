@@ -1,6 +1,7 @@
 package com.swissre.component;
 
 import com.swissre.model.Employee;
+import com.swissre.model.Subordinate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class CsvParserTest {
                 + "2,Jane,Doe,60000,1";
         reader = new BufferedReader(new StringReader(csvData));
 
-        List<Employee> employees = csvParser.parseCsv(reader);
+        List<Employee> employees = csvParser.parse(reader);
 
         assertEquals(2, employees.size());
 
@@ -47,28 +48,29 @@ class CsvParserTest {
         assertEquals("John", employee1.getFirstName());
         assertEquals("Doe", employee1.getLastName());
         assertEquals(50000, employee1.getSalary());
-        assertNull(employee1.getManagerId());
+        assertFalse(employee1 instanceof Subordinate);
 
         Employee employee2 = employees.get(1);
         assertEquals(2, employee2.getId());
         assertEquals("Jane", employee2.getFirstName());
         assertEquals("Doe", employee2.getLastName());
         assertEquals(60000, employee2.getSalary());
-        assertEquals(1, employee2.getManagerId());
+        assertTrue(employee2 instanceof Subordinate);
+        assertEquals(1, ((Subordinate) employee2).getManagerId());
     }
 
     @Test
     void testParseCsv_EmptyData() {
         reader = new BufferedReader(new StringReader(""));
 
-        List<Employee> employees = csvParser.parseCsv(reader);
+        List<Employee> employees = csvParser.parse(reader);
         assertTrue(employees.isEmpty());
     }
 
     @Test
     void testParseCsv_HeaderOnly() {
         reader = new BufferedReader(new StringReader("id,firstName,lastName,salary,managerId"));
-        List<Employee> employees = csvParser.parseCsv(reader);
+        List<Employee> employees = csvParser.parse(reader);
         assertTrue(employees.isEmpty());
     }
 
@@ -77,7 +79,7 @@ class CsvParserTest {
         reader = new BufferedReader(new StringReader("id,firstName,lastName,salary,managerId\n" +
                 "1,John,Doe,"));
 
-        List<Employee> employees = csvParser.parseCsv(reader);
+        List<Employee> employees = csvParser.parse(reader);
         assertTrue(employees.isEmpty());
 
         String output = outputStreamCaptor.toString().trim();
@@ -89,7 +91,7 @@ class CsvParserTest {
         reader = new BufferedReader(new StringReader("id,firstName,lastName,salary,managerId\n" +
                 "1,John,Doe,abc,def"));
 
-        List<Employee> employees = csvParser.parseCsv(reader);
+        List<Employee> employees = csvParser.parse(reader);
         assertTrue(employees.isEmpty());
 
         String output = outputStreamCaptor.toString().trim();

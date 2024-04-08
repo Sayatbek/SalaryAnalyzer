@@ -4,49 +4,42 @@ import java.util.Objects;
 
 /**
  * Represents an employee in the organization.
- * This class stores basic employee information including their ID, name, salary, and manager.
+ * This class stores basic employee information including their ID, name, lastname, salary.
  */
 public class Employee {
     /**
      * Unique identifier for the employee.
      */
-    private final int id;
+    protected final int id;
 
     /**
      * First name of the employee.
      */
-    private final String firstName;
+    protected final String firstName;
 
     /**
      * Last name of the employee.
      */
-    private final String lastName;
+    protected final String lastName;
 
     /**
      * Salary of the employee.
      */
-    private final double salary;
-
-    /**
-     * ID of the employee's manager. This field is nullable indicating that if null, the employee does not have a manager (e.g., CEO).
-     */
-    private final Integer managerId; // Nullable for the CEO, who has no manager
+    protected final double salary;
 
     /**
      * Constructs a new Employee instance.
      *
-     * @param id         Unique identifier for the employee.
-     * @param firstName  First name of the employee.
-     * @param lastName   Last name of the employee.
-     * @param salary     Salary of the employee.
-     * @param managerId  ID of the employee's manager. Can be null if the employee has no manager.
+     * @param id        Unique identifier for the employee.
+     * @param firstName First name of the employee.
+     * @param lastName  Last name of the employee.
+     * @param salary    Salary of the employee.
      */
-    public Employee(int id, String firstName, String lastName, double salary, Integer managerId) {
+    public Employee(int id, String firstName, String lastName, double salary) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;
-        this.managerId = managerId;
     }
 
     /**
@@ -85,28 +78,14 @@ public class Employee {
         return salary;
     }
 
-    /**
-     * Gets the manager ID for the employee.
-     *
-     * @return An integer representing the ID of the employee's manager, or null if the employee is at the top of the hierarchy.
-     */
-    public Integer getManagerId() {
-        return managerId;
-    }
-
-    /**
-     * Returns a string representation of the employee, including id, first name, last name, salary, and managerId.
-     *
-     * @return A string representation of the employee.
-     */
     @Override
     public String toString() {
-        return String.format("%d, %s, %s, %.2f, %s", id, firstName, lastName, salary, managerId == null ? "" : managerId.toString());
+        return String.format("%d, %s, %s, %.2f", id, firstName, lastName, salary);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, salary, managerId);
+        return Objects.hash(id, firstName, lastName, salary);
     }
 
     @Override
@@ -117,7 +96,6 @@ public class Employee {
         return id == employee.id &&
                 Double.compare(employee.salary, salary) == 0 &&
                 Objects.equals(firstName, employee.firstName) &&
-                Objects.equals(lastName, employee.lastName) &&
-                Objects.equals(managerId, employee.managerId);
+                Objects.equals(lastName, employee.lastName);
     }
 }

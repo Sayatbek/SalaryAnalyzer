@@ -45,7 +45,6 @@ class SalaryAnalysisServiceTest {
 
     @Test
     void testManagerEarningMoreThanTheyShould() {
-        // Setup specific employees scenario
         List<Employee> employees = fileReaderService.readEmployeesFromCsv("employeesEarningMoreThanTheyShould.csv");
         salaryAnalysisService = new SalaryAnalysisService(employees);
 
