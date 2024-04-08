@@ -16,7 +16,7 @@ public class FileReader {
      * @return a BufferedReader for the file.
      * @throws IllegalArgumentException if the file is not found on the classpath.
      */
-    public BufferedReader readFile(String fileName) {
+    public BufferedReader read(String fileName) {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
             throw new IllegalArgumentException("File not found: " + fileName);

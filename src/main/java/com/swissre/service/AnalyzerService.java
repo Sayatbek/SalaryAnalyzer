@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * This class provides services for analyzing the salaries and reporting lines of employees within an organization.
  * It aims to identify discrepancies in manager salaries and report on excessively long reporting lines.
  */
-public class SalaryAnalysisService {
+public class AnalyzerService {
 
     private static final double MINIMUM_SALARY_MULTIPLIER = 1.20;
     private static final double MAXIMUM_SALARY_MULTIPLIER = 1.50;
@@ -23,11 +23,11 @@ public class SalaryAnalysisService {
     private final Map<Integer, Employee> employeesMap;
 
     /**
-     * Constructs a new SalaryAnalysisService with a provided list of employees.
+     * Constructs a new AnalyzerService with a provided list of employees.
      *
      * @param employees The complete list of employees to be analyzed.
      */
-    public SalaryAnalysisService(List<Employee> employees) {
+    public AnalyzerService(List<Employee> employees) {
         this.employeesMap = employees.stream()
                 .collect(Collectors.toMap(Employee::getId, employee -> employee));
     }

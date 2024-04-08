@@ -14,11 +14,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SalaryAnalysisServiceTest {
+class AnalyzerServiceTest {
 
     private final PrintStream standardOut = System.out;
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    private SalaryAnalysisService salaryAnalysisService;
+    private AnalyzerService analyzerService;
     private final FileReaderService fileReaderService = new FileReaderService(new FileReader(), new CsvParser());
 
 
@@ -35,9 +35,9 @@ class SalaryAnalysisServiceTest {
     @Test
     void testManagerEarningLessThanTheyShould() {
         List<Employee> employees = fileReaderService.readEmployeesFromCsv("employeesEarningLessThanTheyShould.csv");
-        salaryAnalysisService = new SalaryAnalysisService(employees);
+        analyzerService = new AnalyzerService(employees);
 
-        salaryAnalysisService.analyzeSalariesOfManagers();
+        analyzerService.analyzeSalariesOfManagers();
         String output = outputStreamCaptor.toString().trim();
         assertTrue(output.contains("earns less than they should"));
         assertFalse(output.contains("earns more than they should"));
@@ -46,9 +46,9 @@ class SalaryAnalysisServiceTest {
     @Test
     void testManagerEarningMoreThanTheyShould() {
         List<Employee> employees = fileReaderService.readEmployeesFromCsv("employeesEarningMoreThanTheyShould.csv");
-        salaryAnalysisService = new SalaryAnalysisService(employees);
+        analyzerService = new AnalyzerService(employees);
 
-        salaryAnalysisService.analyzeSalariesOfManagers();
+        analyzerService.analyzeSalariesOfManagers();
         String output = outputStreamCaptor.toString().trim();
         assertTrue(output.contains("earns more than they should"));
         assertFalse(output.contains("earns less than they should"));
@@ -57,9 +57,9 @@ class SalaryAnalysisServiceTest {
     @Test
     void testEmployeeReportingLineWithinLimit() {
         List<Employee> employees = fileReaderService.readEmployeesFromCsv("employeesReportingLineWithinLimit.csv");
-        salaryAnalysisService = new SalaryAnalysisService(employees);
+        analyzerService = new AnalyzerService(employees);
 
-        salaryAnalysisService.analyzeSalariesOfManagers();
+        analyzerService.analyzeSalariesOfManagers();
         String output = outputStreamCaptor.toString().trim();
         assertFalse(output.contains("reporting line that is too long"));
     }
@@ -67,9 +67,9 @@ class SalaryAnalysisServiceTest {
     @Test
     void testEmployeeReportingLineTooLong() {
         List<Employee> employees = fileReaderService.readEmployeesFromCsv("employeesReportingLineTooLong.csv");
-        salaryAnalysisService = new SalaryAnalysisService(employees);
+        analyzerService = new AnalyzerService(employees);
 
-        salaryAnalysisService.analyzeDepthOfReportingLines();
+        analyzerService.analyzeDepthOfReportingLines();
         String output = outputStreamCaptor.toString().trim();
         assertTrue(output.contains("reporting line that is too long"));
     }

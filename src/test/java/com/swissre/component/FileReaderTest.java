@@ -20,13 +20,13 @@ class FileReaderTest {
 
     @Test
     void testReadFile_Success() throws IOException {
-        BufferedReader reader = fileReader.readFile("employees.csv");
+        BufferedReader reader = fileReader.read("employees.csv");
         String firstLine = reader.readLine();
         assertEquals("Id,firstName,lastName,salary,managerId", firstLine);
     }
 
     @Test
     void testReadFile_FileNotFound() {
-        assertThrows(IllegalArgumentException.class, () -> fileReader.readFile("nonexistentFile.csv"));
+        assertThrows(IllegalArgumentException.class, () -> fileReader.read("nonexistentFile.csv"));
     }
 }

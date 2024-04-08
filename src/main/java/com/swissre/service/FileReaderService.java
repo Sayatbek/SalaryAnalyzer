@@ -33,7 +33,7 @@ public class FileReaderService {
      * @return a list of Employee objects parsed from the CSV file.
      */
     public List<Employee> readEmployeesFromCsv(String fileName) {
-        BufferedReader bufferedReader = fileReader.readFile(fileName);
+        BufferedReader bufferedReader = fileReader.read(fileName);
         return csvParser.parse(bufferedReader);
     }
 }
