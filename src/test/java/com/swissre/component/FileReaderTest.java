@@ -1,5 +1,6 @@
 package com.swissre.component;
 
+import com.swissre.component.impl.FileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,22 +12,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileReaderTest {
 
-    private FileReader fileReader;
+    private Reader reader;
 
     @BeforeEach
     void setUp() {
-        fileReader = new FileReader();
+        reader = new FileReader();
     }
 
     @Test
     void testReadFile_Success() throws IOException {
-        BufferedReader reader = fileReader.read("employees.csv");
-        String firstLine = reader.readLine();
+        BufferedReader bufferedReader = reader.read("employees.csv");
+        String firstLine = bufferedReader.readLine();
         assertEquals("Id,firstName,lastName,salary,managerId", firstLine);
     }
 
     @Test
     void testReadFile_FileNotFound() {
-        assertThrows(IllegalArgumentException.class, () -> fileReader.read("nonexistentFile.csv"));
+        assertThrows(IllegalArgumentException.class, () -> reader.read("nonexistentFile.csv"));
     }
 }

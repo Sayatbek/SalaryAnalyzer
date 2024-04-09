@@ -1,6 +1,7 @@
 package com.swissre.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents an employee in the organization.
@@ -10,22 +11,27 @@ public class Employee {
     /**
      * Unique identifier for the employee.
      */
-    protected final int id;
+    private final int id;
 
     /**
      * First name of the employee.
      */
-    protected final String firstName;
+    private final String firstName;
 
     /**
      * Last name of the employee.
      */
-    protected final String lastName;
+    private final String lastName;
 
     /**
      * Salary of the employee.
      */
-    protected final double salary;
+    private final double salary;
+
+    /**
+     * Id of the manager.
+     */
+    private final Optional<Integer> managerId;
 
     /**
      * Constructs a new Employee instance.
@@ -35,11 +41,12 @@ public class Employee {
      * @param lastName  Last name of the employee.
      * @param salary    Salary of the employee.
      */
-    public Employee(int id, String firstName, String lastName, double salary) {
+    public Employee(int id, String firstName, String lastName, double salary, Optional<Integer> managerId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;
+        this.managerId = managerId;
     }
 
     /**
@@ -76,6 +83,15 @@ public class Employee {
      */
     public double getSalary() {
         return salary;
+    }
+
+    /**
+     * Gets the employee's managerId.
+     *
+     * @return An Integer representing the managerId for the employee.
+     */
+    public Optional<Integer> getManagerId() {
+        return managerId;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.swissre.service;
 
 import com.swissre.model.Employee;
-import com.swissre.model.Subordinate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -39,14 +39,13 @@ public class AnalyzerService {
      * A manager's salary is considered below expectation if it's less than 20% more than the average salary of
      * their direct subordinates, and above expectation if it's more than 50% more than that average.
      */
-    public void analyzeSalariesOfManagers() {
-        Map<Integer, List<Subordinate>> managersToSubordinates = employeesMap.values().stream()
-                .filter(employee -> employee instanceof Subordinate)
-                .map(employee -> (Subordinate) employee)
-                .collect(Collectors.groupingBy(Subordinate::getManagerId));
+    public void analyzeManagersSalaries() {
+        Map<Integer, List<Employee>> managersToSubordinates = employeesMap.values().stream()
+                .filter(employee -> employee.getManagerId().isPresent())
+                .collect(Collectors.groupingBy(employee -> employee.getManagerId().get()));
 
         managersToSubordinates.forEach((managerId, subordinates) -> {
-            Employee manager = findEmployeeById(managerId);
+            Employee manager = employeesMap.get(managerId);
 
             if (manager == null) {
                 System.out.println("Manager with ID " + managerId + " not found.");
@@ -74,8 +73,7 @@ public class AnalyzerService {
      */
     public void analyzeDepthOfReportingLines() {
         employeesMap.values().stream()
-                .filter(e -> e instanceof Subordinate)
-                .map(e -> (Subordinate) e)
+                .filter(employee -> employee.getManagerId().isPresent())
                 .forEach(subordinate -> {
                     int depth = calculateReportingLineDepth(subordinate);
 
@@ -85,32 +83,19 @@ public class AnalyzerService {
                 });
     }
 
-    private Employee findEmployeeById(int id) {
-        return employeesMap.get(id);
-    }
-
-    private double calculateAverageSalary(List<Subordinate> employees) {
+    private double calculateAverageSalary(List<Employee> employees) {
         return employees.stream()
                 .mapToDouble(Employee::getSalary)
                 .average()
                 .orElse(0.0);
     }
 
-    private int calculateReportingLineDepth(Subordinate employee) {
+    private int calculateReportingLineDepth(Employee employee) {
         int depth = 0;
-        Integer managerId = employee.getManagerId();
-        while (managerId != null) {
-            Employee manager = findEmployeeById(managerId);
-
-            if (manager == null) {
-                System.out.println("Manager with ID " + managerId + " not found.");
-                break;
-            }
+        Optional<Integer> managerId = employee.getManagerId();
+        while (managerId.isPresent() && depth <= MAX_REPORTING_LINE_DEPTH) {
+            managerId = employeesMap.get(managerId.get()).getManagerId();
             depth++;
-            if (!(manager instanceof Subordinate)) {
-                break;
-            }
-            managerId = ((Subordinate) manager).getManagerId();
         }
         return depth;
     }
